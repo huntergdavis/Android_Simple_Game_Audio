@@ -7,7 +7,7 @@ import android.media.SoundPool;
 import android.util.FloatMath;
 import android.util.SparseIntArray;
 
-public class EasyAudioManager implements MediaPlayer.OnCompletionListener {
+public class EasyAudioManager {
 	public static final int SOUND_SCRATCH = 1;
 	public static final int DRUM_ONE = 2;
 	public static final int DRUM_TWO = 3;
@@ -19,6 +19,7 @@ public class EasyAudioManager implements MediaPlayer.OnCompletionListener {
 	private SoundPool soundPool;
 	MediaPlayer mediaPlayer;
 	private SparseIntArray soundPoolMap;
+	private int songId = -1;
 
 	public boolean songPlaying;
 
@@ -42,7 +43,31 @@ public class EasyAudioManager implements MediaPlayer.OnCompletionListener {
 
 		// mediaPlayer = MediaPlayer.create(context, R.raw.who);
 		// mediaPlayer.setOnCompletionListener(this);
+		
 
+	}
+	
+	public MediaPlayer.OnCompletionListener getDefaultOnComplete() {
+		return new MediaPlayer.OnCompletionListener() {
+			
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				
+			}
+		};
+		
+	}
+	
+	public void setSong(Context context,int songReference) {
+		songId = songReference;
+		mediaPlayer = MediaPlayer.create(context, songId);
+		mediaPlayer.setOnCompletionListener(getDefaultOnComplete());
+	}
+	
+	public void setSongAndOnComplete(Context context, int songReference, MediaPlayer.OnCompletionListener onComplete) {
+		songId = songReference;
+		mediaPlayer = MediaPlayer.create(context, songId);
+		mediaPlayer.setOnCompletionListener(onComplete);
 	}
 
 	public void playSong() {
