@@ -8,29 +8,38 @@ import android.util.FloatMath;
 import android.util.SparseIntArray;
 
 public class EasyAudioManager {
-	public static final int SOUND_SCRATCH = 1;
-	public static final int DRUM_ONE = 2;
-	public static final int DRUM_TWO = 3;
-	public static final int DRUM_THREE = 4;
-	public static final int DRUM_FOUR = 5;
-	public static final int DRUM_FIVE = 6;
-	public static final int DRUM_SIX = 7;
+	//public static final int SOUND_SCRATCH = 1;
+	//public static final int DRUM_ONE = 2;
+	//public static final int DRUM_TWO = 3;
+	//public static final int DRUM_THREE = 4;
+	//public static final int DRUM_FOUR = 5;
+	//public static final int DRUM_FIVE = 6;
+	//public static final int DRUM_SIX = 7;
 
 	private SoundPool soundPool;
 	MediaPlayer mediaPlayer;
-	private SparseIntArray soundPoolMap;
+	///private SparseIntArray soundPoolMap;
+	private int[] soundArray;
 	private int songId = -1;
 
 	public boolean songPlaying;
 
-	public EasyAudioManager(Context context) {
-		initSounds(context);
+	public EasyAudioManager(Context context, int[] soundsToLoad) {
+		initSoundPool(context, soundsToLoad);
 		songPlaying = false;
 	}
 
-	private void initSounds(Context context) {
-		soundPool = new SoundPool(12, AudioManager.STREAM_MUSIC, 100);
-		soundPoolMap = new SparseIntArray();
+	public void initSoundPool(Context context, int[] soundsToLoad) {
+		if(soundsToLoad.length == 0) {
+			return;
+		}
+		soundPool = new SoundPool(soundsToLoad.length, AudioManager.STREAM_MUSIC, 100);
+		soundArray = new int[soundsToLoad.length];
+		//soundPoolMap = new SparseIntArray();
+		for(int i =0 ;i<soundsToLoad.length;i++) {
+			soundArray[i] = soundPool.load(context,  soundsToLoad[i], 1);
+		}
+		
 		// soundPoolMap.put(SOUND_SCRATCH,
 		// soundPool.load(context, R.raw.drum1, 1));
 		// soundPoolMap.put(DRUM_ONE, soundPool.load(context, R.raw.drum1, 2));
@@ -89,13 +98,7 @@ public class EasyAudioManager {
 		mediaPlayer.seekTo(0);
 	}
 
-	public void onCompletion(MediaPlayer arg0) {
-		if (!mediaPlayer.isPlaying()) {
-			mediaPlayer.start();
-		}
-	}
-
-	public void playSound(int sound, Context context) {
+	public void playSound(int soundPositionInPool, Context context) {
 		AudioManager mgr = (AudioManager) context
 				.getSystemService(Context.AUDIO_SERVICE);
 		float streamVolumeCurrent = mgr
@@ -104,38 +107,38 @@ public class EasyAudioManager {
 				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		float volume = streamVolumeCurrent / streamVolumeMax;
 
-		soundPool.play(soundPoolMap.get(sound), volume, volume, 1, 0, 1f);
+		soundPool.play(soundArray[soundPositionInPool], volume, volume, 1, 0, 1f);
 	}
 
-	public void scratch(Context context) {
-		playSound(SOUND_SCRATCH, context);
-	}
-
-	public void playDrumNumber(int drumNumber, Context context) {
-		switch (drumNumber) {
-		case 1:
-			playSound(DRUM_ONE, context);
-			break;
-		case 2:
-			playSound(DRUM_TWO, context);
-			break;
-		case 3:
-			playSound(DRUM_THREE, context);
-			break;
-		case 4:
-			playSound(DRUM_FOUR, context);
-			break;
-		case 5:
-			playSound(DRUM_FIVE, context);
-			break;
-		case 6:
-			playSound(DRUM_SIX, context);
-			break;
-
-		default:
-			break;
-		}
-	}
+//	public void scratch(Context context) {
+//		playSound(SOUND_SCRATCH, context);
+//	}
+//
+//	public void playDrumNumber(int drumNumber, Context context) {
+//		switch (drumNumber) {
+//		case 1:
+//			playSound(DRUM_ONE, context);
+//			break;
+//		case 2:
+//			playSound(DRUM_TWO, context);
+//			break;
+//		case 3:
+//			playSound(DRUM_THREE, context);
+//			break;
+//		case 4:
+//			playSound(DRUM_FOUR, context);
+//			break;
+//		case 5:
+//			playSound(DRUM_FIVE, context);
+//			break;
+//		case 6:
+//			playSound(DRUM_SIX, context);
+//			break;
+//
+//		default:
+//			break;
+//		}
+//	}
 
 	// functions related to waveform generation
 
