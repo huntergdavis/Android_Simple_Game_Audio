@@ -28,8 +28,16 @@ public class EasyAudioManager {
 		initSoundPool(context, soundsToLoad);
 		songPlaying = false;
 	}
+	
+	public EasyAudioManager(Context context) {
+		initSoundPool(context, null);
+		songPlaying = false;
+	}
 
 	public void initSoundPool(Context context, int[] soundsToLoad) {
+		if(soundsToLoad == null) {
+			return;
+		}
 		if(soundsToLoad.length == 0) {
 			return;
 		}
